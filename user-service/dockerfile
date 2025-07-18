@@ -1,0 +1,6 @@
+FROM golang:1.24.4
+WORKDIR /app
+COPY . .
+RUN go build -o user-service main.go
+EXPOSE 8082
+CMD ["./user-service"]

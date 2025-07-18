@@ -1,0 +1,13 @@
+# order-service/Dockerfile
+
+FROM golang:1.24.4
+
+WORKDIR /app
+
+COPY . .
+
+RUN go build -o order-service orders.go
+
+EXPOSE 8001
+
+CMD ["./order-service"]

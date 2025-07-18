@@ -1,0 +1,13 @@
+#book-service/Dockerfile
+
+FROM golang:1.24.4
+
+WORKDIR /app
+
+COPY . .
+
+RUN go build -o book-service books.go
+
+EXPOSE 8000
+
+CMD ["./book-service"]

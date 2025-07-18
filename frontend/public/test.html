@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>API Test</title>
+</head>
+<body>
+    <h1>Frontend-Backend Connection Test</h1>
+    <div id="results"></div>
+    
+    <script>
+        async function testAPI() {
+            const results = document.getElementById('results');
+            
+            try {
+                // Test 1: Health Check
+                const healthResponse = await fetch('http://localhost:8080/health');
+                const healthData = await healthResponse.json();
+                results.innerHTML += `<p>✅ Health Check: ${healthData.status}</p>`;
+                
+                // Test 2: Login
+                const loginResponse = await fetch('http://localhost:8080/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username: 'admin', password: 'password' })
+                });
+                const loginData = await loginResponse.json();
+                results.innerHTML += `<p>✅ Login: Token received</p>`;
+                
+                // Test 3: Get Books
+                const booksResponse = await fetch('http://localhost:8080/books', {
+                    headers: { 'Authorization': `Bearer ${loginData.token}` }
+                });
+                const books = await booksResponse.json();
+                results.innerHTML += `<p>✅ Books: ${books.length} books found</p>`;
+                results.innerHTML += `<pre>${JSON.stringify(books, null, 2)}</pre>`;
+                
+            } catch (error) {
+                results.innerHTML += `<p>❌ Error: ${error.message}</p>`;
+            }
+        }
+        
+        testAPI();
+    </script>
+</body>
+</html>
