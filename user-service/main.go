@@ -12,30 +12,19 @@ import (
 )
 
 func main() {
-	// Load configuration from .env file and environment variables
 	cfg := config.Load()
 	log.Printf("Starting %s v%s", cfg.ServiceName, cfg.ServiceVersion)
 	log.Printf("JWT token expiry: %d hour(s)", cfg.TokenExpiryHours)
 
-	// Initialize repository
-	userRepo := repository.NewInMemoryUserRepository()
-
-	// Initialize service
+	// Use the simple repo and service
+	userRepo := repository.NewUserRepo()
 	userService := service.NewUserService(userRepo, cfg)
-
-	// Initialize middleware
 	authMiddleware := middleware.NewAuthMiddleware(cfg)
-
-	// Initialize handlers
 	userHandler := handlers.NewUserHandler(userService)
 
-	// Initialize Gin router
 	router := gin.Default()
-
-	// Setup routes
 	handlers.SetupRoutes(router, userHandler, authMiddleware)
 
-	// Start server
 	log.Printf("User Service starting on port %s", cfg.Port)
 	if err := router.Run(":" + cfg.Port); err != nil {
 		log.Fatal("Failed to start server:", err)
